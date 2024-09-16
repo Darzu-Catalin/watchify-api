@@ -39,3 +39,23 @@ func GetGenreByMovieId(w http.ResponseWriter, r *http.Request) {
 
     w.Write(jsonData)
 }
+
+func GetAllGenres(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+    var genres []string
+    var err error
+    genres, err = services.GetAllGenres();
+    if err != nil {
+        http.Error(w, "Failed to retrieve all genres", http.StatusInternalServerError)
+        return
+    }
+
+    jsonData, err := json.Marshal(genres)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.Write(jsonData)
+}
+

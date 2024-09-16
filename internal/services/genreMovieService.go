@@ -1,9 +1,11 @@
 package services
 
 import (
-    "WatchifyAPI/internal/db"
-    "WatchifyAPI/internal/models"
-    
+	"WatchifyAPI/internal/db"
+	"WatchifyAPI/internal/models"
+    "fmt"
+
+	
 )
 
 func GetGenreByMovieId(movieId int) (*models.MovieGenres, error) {
@@ -46,4 +48,32 @@ func GetGenreByMovieId(movieId int) (*models.MovieGenres, error) {
     
 
     return &movieGenre, nil
+}
+
+func GetAllGenres() ([]string, error){
+    var genres []string
+    var err error
+
+    rows, err := db.DB.Query("SELECT name FROM genres")
+    
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    for rows.Next(){
+        var genreName string;
+        err := rows.Scan(&genreName)
+        if err != nil {
+            return nil, err
+        }
+        genres = append(genres, genreName)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, err
+    }
+    fmt.Println("Array:", genres)
+
+    return genres, nil
 }

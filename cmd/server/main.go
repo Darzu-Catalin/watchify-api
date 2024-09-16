@@ -89,6 +89,7 @@ func main() {
 	http.HandleFunc("/video", handlers.GetVideoByMovieId)
 	http.HandleFunc("/production", handlers.GetProductionByMovieId)
 	http.HandleFunc("/getData", handlers.GetMovieDataByMovieId)
+	http.HandleFunc("/getAllGenres", handlers.GetAllGenres)
 
 
     fmt.Println("Server is running on port 8080...")
