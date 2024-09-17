@@ -90,7 +90,8 @@ func main() {
 	http.HandleFunc("/production", handlers.GetProductionByMovieId)
 	http.HandleFunc("/getData", handlers.GetMovieDataByMovieId)
 	http.HandleFunc("/getAllGenres", handlers.GetAllGenres)
-
+	http.HandleFunc("/searchByName", handlers.SearchMovieByName)
+	http.HandleFunc("/searchByActor", handlers.SearchMovieByActor)
 
     fmt.Println("Server is running on port 8080...")
     log.Fatal(http.ListenAndServe(":8080", nil))
