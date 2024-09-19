@@ -1,7 +1,7 @@
 package services
 
 import (
-	// "WatchifyAPI/internal/db"
+	 "WatchifyAPI/internal/db"
 	"WatchifyAPI/internal/models"
 	// "net/http"
 	"log"
@@ -94,3 +94,69 @@ func GetMovieDataByMovieId(movieId int) (*models.Universal, error) {
 
     return &movieData, nil
 }
+
+
+func GetNewMoviesByUserId(id int) ([]*models.Universal, error){
+    var movies []*models.Universal
+    var ids []int
+    query := "SELECT id FROM movies m WHERE NOT EXISTS (SELECT 1 FROM user_movie_interactions ui WHERE ui.movie_id = m.id AND ui.user_id = ?) AND m.release_date < CURRENT_DATE ORDER BY m.release_date DESC LIMIT 30"
+	
+	rows, err := db.DB.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+    for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+
+
+    for _, value := range ids {
+		movie, err := GetMovieDataByMovieId(value)
+		if err != nil {
+			return nil, err
+		}
+		movies = append(movies, movie)
+	}
+
+    return movies, nil
+}
+
+func GetTrandingMoviesByUserId(id int) ([]*models.Universal, error){
+    var movies []*models.Universal
+    var ids []int
+    query := "SELECT id FROM movies m WHERE NOT EXISTS (SELECT 1 FROM user_movie_interactions ui WHERE ui.movie_id = m.id AND ui.user_id = ?) AND m.release_date < CURRENT_DATE ORDER BY popularity DESC,m.release_date DESC LIMIT 30"
+	
+	rows, err := db.DB.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+    for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+
+
+    for _, value := range ids {
+		movie, err := GetMovieDataByMovieId(value)
+		if err != nil {
+			return nil, err
+		}
+		movies = append(movies, movie)
+	}
+
+    return movies, nil
+}
+
+
+
