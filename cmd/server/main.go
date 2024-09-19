@@ -6,97 +6,55 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
-	_ "github.com/go-sql-driver/mysql"
-	// "encoding/json"
-	// "strconv"
-	// "github.com/gin-gonic/gin"
-	// "errors"
-	// "time"
-	// "database/sql"
 )
 
-// func getMovieById(w http.ResponseWriter, r *http.Request){
-// 	w.Header().Set("Content-Type", "application/json")
-// 	ids, ok := r.URL.Query()["id"]
-//     if !ok || len(ids[0]) < 1 {
-//         http.Error(w, "Missing 'id' parameter", http.StatusBadRequest)
-//         return
-//     }
-// 	id, err := strconv.Atoi(ids[0])
-//     if err != nil {
-//         http.Error(w, "Invalid 'id' parameter", http.StatusBadRequest)
-//         return
-//     }
+// CORS middleware function
+func enableCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Add CORS headers
+		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow all origins, you can change this to specific domains
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-// 	var movie Movie
-// 	var releaseDateStr string
+		// Handle preflight OPTIONS request
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
 
-// 	query := "Select * from movies where id = ?"
-
-// 	err = db.QueryRow(query, id).Scan(
-// 		&movie.ID,
-//         &movie.Title,
-//         &releaseDateStr,
-//         &movie.Overview,
-//         &movie.Rating,
-//         &movie.Popularity,
-//         &movie.Runtime,
-//         &movie.Budget,
-//         &movie.Revenue,
-//         &movie.PosterPath,
-// 	)
-// 	if err != nil {
-// 		if err == sql.ErrNoRows {
-//             http.Error(w, "Movie not found", http.StatusNotFound)
-//         } else {
-//             log.Printf("Error retrieving movie: %v", err)
-//             http.Error(w, "Server error", http.StatusInternalServerError)
-//         }
-//         return
-// 	}
-
-// 	movie.ReleaseDate, err = time.Parse("2006-01-02", releaseDateStr)
-// 	if err != nil {
-// 		log.Printf("Error parsing date: %v", err)
-//         http.Error(w, "Invalid date format", http.StatusInternalServerError)
-//         return
-// 	}
-
-// 	jsonData, err := json.Marshal(movie)
-//     if err != nil {
-//         http.Error(w, err.Error(), http.StatusInternalServerError)
-//         return
-//     }
-
-//     // Write the JSON response
-//     w.Write(jsonData)
-// }
-
-
-
-
-func main() {
-	if err := db.InitDB("root:@tcp(127.0.0.1:3306)/watchify"); err != nil {
-        log.Fatalf("Error initializing database: %v", err)
-    }
-	http.HandleFunc("/movie", handlers.GetMovieById)
-    http.HandleFunc("/movie/add", handlers.AddMovie)
-    http.HandleFunc("/movie/delete", handlers.DeleteMovie)
-    http.HandleFunc("/crew", handlers.GetCrewByMovieId)
-    http.HandleFunc("/cast", handlers.GetCastByMovieId)
-    http.HandleFunc("/genre", handlers.GetGenreByMovieId)
-	http.HandleFunc("/video", handlers.GetVideoByMovieId)
-	http.HandleFunc("/production", handlers.GetProductionByMovieId)
-	http.HandleFunc("/getData", handlers.GetMovieDataByMovieId)
-	http.HandleFunc("/getAllGenres", handlers.GetAllGenres)
-	http.HandleFunc("/searchByName", handlers.SearchMovieByName)
-	http.HandleFunc("/searchByActor", handlers.SearchMovieByActor)
-
-    fmt.Println("Server is running on port 8080...")
-    log.Fatal(http.ListenAndServe(":8080", nil))
-    fmt.Println("Success!")
-
+		// Call the next handler
+		next.ServeHTTP(w, r)
+	})
 }
 
+func main() {
+	// Initialize the database
+	if err := db.InitDB("root:@tcp(127.0.0.1:3306)/watchify"); err != nil {
+		log.Fatalf("Error initializing database: %v", err)
+	}
 
+	// Create a new ServeMux
+	mux := http.NewServeMux()
+
+	// Register your handlers
+	mux.HandleFunc("/movie", handlers.GetMovieById)
+	mux.HandleFunc("/movie/add", handlers.AddMovie)
+	mux.HandleFunc("/movie/delete", handlers.DeleteMovie)
+	mux.HandleFunc("/crew", handlers.GetCrewByMovieId)
+	mux.HandleFunc("/cast", handlers.GetCastByMovieId)
+	mux.HandleFunc("/genre", handlers.GetGenreByMovieId)
+	mux.HandleFunc("/video", handlers.GetVideoByMovieId)
+	mux.HandleFunc("/production", handlers.GetProductionByMovieId)
+	mux.HandleFunc("/getData", handlers.GetMovieDataByMovieId)
+	mux.HandleFunc("/getAllGenres", handlers.GetAllGenres)
+	mux.HandleFunc("/searchByName", handlers.SearchMovieByName)
+	mux.HandleFunc("/searchByActor", handlers.SearchMovieByActor)
+
+	// Wrap the mux with the CORS middleware
+	corsHandler := enableCORS(mux)
+
+	// Start the server
+	fmt.Println("Server is running on port 3000...")
+	log.Fatal(http.ListenAndServe(":3000", corsHandler))
+	fmt.Println("Success!")
+}
