@@ -24,7 +24,7 @@ func GetMovieDataByMovieId(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Invalid 'id' parameter", http.StatusBadRequest)
         return
     }
-
+    
     movieData, err := services.GetMovieDataByMovieId(movieId)
     if err != nil {
         http.Error(w, "Failed to retrieve crew members", http.StatusInternalServerError)
