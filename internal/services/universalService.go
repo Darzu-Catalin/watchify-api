@@ -99,7 +99,7 @@ func GetMovieDataByMovieId(movieId int) (*models.Universal, error) {
 func GetNewMoviesByUserId(id int) ([]*models.Universal, error){
     var movies []*models.Universal
     var ids []int
-    query := "SELECT id FROM movies m WHERE NOT EXISTS (SELECT 1 FROM user_movie_interactions ui WHERE ui.movie_id = m.id AND ui.user_id = ?) AND m.release_date < CURRENT_DATE ORDER BY m.release_date DESC LIMIT 30"
+    query := "SELECT id FROM movies m WHERE NOT EXISTS (SELECT 1 FROM user_movie_interactions ui WHERE ui.movie_id = m.id AND ui.user_id = ? and m.poster_path is not null) AND m.release_date < CURRENT_DATE ORDER BY m.release_date DESC LIMIT 30"
 	
 	rows, err := db.DB.Query(query, id)
 	if err != nil {

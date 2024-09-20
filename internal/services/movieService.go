@@ -10,7 +10,7 @@ func GetMovieById(id int) (*models.Movie, error) {
     var movie models.Movie
     var releaseDateStr string
 
-    err := db.DB.QueryRow("SELECT * FROM movies WHERE id = ?", id).
+    err := db.DB.QueryRow("SELECT * FROM movies WHERE id = ? and poster_path is not null", id).
         Scan(
 			&movie.ID, 
 			&movie.Title, 
