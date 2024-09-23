@@ -51,7 +51,7 @@ func main() {
 	mux.HandleFunc("/searchByActor", handlers.SearchMovieByActor)
 	mux.HandleFunc("/getNewMovies", handlers.GetNewMoviesByUserId)
 	mux.HandleFunc("/getTrendingMovies", handlers.GetTrandingMoviesByUserId)
-
+	mux.HandleFunc("/addUser", handlers.AddUser)
 	// Wrap the mux with the CORS middleware
 	corsHandler := enableCORS(mux)
 
