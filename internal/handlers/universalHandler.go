@@ -101,7 +101,7 @@ func GetTrandingMoviesByUserId(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Missing 'id' parameter", http.StatusBadRequest)
 		return
 	}
-
+    
 	userId, err := strconv.Atoi(ids[0])
 	if err != nil {
 		http.Error(w, "Invalid 'id' parameter", http.StatusBadRequest)
