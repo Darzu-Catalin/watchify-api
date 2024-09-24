@@ -33,7 +33,7 @@ func CreateUser(user models.User) (*models.User, error) {
 func AddUserInteraction(id int, movieId int, interaction string) (string, error) {
 	query := "INSERT INTO user_movie_interactions (user_id, movie_id, interaction_type) VALUES (?,?, ?)"
 	var response string
-
+	
 	// Execute the SQL query
 	res, err := db.DB.Exec(query, id, movieId, interaction)
 	if err != nil {

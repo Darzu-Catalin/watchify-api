@@ -181,3 +181,33 @@ func GetMoviesByGenre(genre string, limitStart int, limitFinish int) ([]*models.
 
 	return movies, nil
 }
+
+func GetWatchLaterMovies(id int, limitStart int, limitFinish int) ([]*models.Universal, error){
+	var movies []*models.Universal
+	var ids []int
+	query := "SELECT movie_id FROM user_movie_interactions m WHERE m.user_id = ? LIMIT ?,? "
+
+	rows, err := db.DB.Query(query, id, limitStart,limitFinish)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+
+	for _, value := range ids {
+		movie, err := GetMovieDataByMovieId(value)
+		if err != nil {
+			return nil, err
+		}
+		movies = append(movies, movie)
+	}
+
+	return movies, nil
+}

@@ -62,7 +62,6 @@ func AddUserInteraction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
     // Decode the request body into the User struct
-
     // Call the service layer to add the user
     response, err := services.AddUserInteraction(userId,movieId,interaction[0])
     if err != nil {
