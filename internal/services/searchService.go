@@ -7,14 +7,14 @@ import (
 	"WatchifyAPI/internal/db"
 )
 
-func SearchByName(prompt string) ([]*models.Universal, error) {
+func SearchByName(prompt string, start int, stop int) ([]*models.Universal, error) {
 	var foundMovies []*models.Universal
 	var ids []int
 
 	// Query to get movie IDs
-	query := "SELECT id FROM movies WHERE title LIKE ?"
+	query := "SELECT id FROM movies WHERE title LIKE ? LIMIT ?,?"
 	searchTerm := "%" + prompt + "%"
-	rows, err := db.DB.Query(query, searchTerm)
+	rows, err := db.DB.Query(query, searchTerm, start, stop)
 	if err != nil {
 		return nil, err
 	}
@@ -39,12 +39,12 @@ func SearchByName(prompt string) ([]*models.Universal, error) {
 	return foundMovies, nil
 }
 
-func SearchByActor(name string) ([]*models.Universal, error) {
+func SearchByActor(name string, start int, stop int) ([]*models.Universal, error) {
 	var foundMovies []*models.Universal
 	var ids []int
-	query := "SELECT movie_id FROM cast WHERE name LIKE ?"
+	query := "SELECT movie_id FROM cast WHERE name LIKE ? LIMIT ?,?"
 	searchTerm := "%" + name + "%"
-	rows, err := db.DB.Query(query, searchTerm)
+	rows, err := db.DB.Query(query, searchTerm, start, stop)
 	if err != nil {
 		return nil, err
 	}

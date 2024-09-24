@@ -150,3 +150,34 @@ func GetTrandingMoviesByUserId(id int, limitStart int, limitFinish int) ([]*mode
 
 	return movies, nil
 }
+
+
+func GetMoviesByGenre(genre string, limitStart int, limitFinish int) ([]*models.Universal, error) {
+	var movies []*models.Universal
+	var ids []int
+	query := "SELECT movie_id FROM movie_genres m inner join genres g on m.genre_id = g.id WHERE g.name = ? LIMIT ?,? "
+
+	rows, err := db.DB.Query(query, genre, limitStart, limitFinish)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+
+	for _, value := range ids {
+		movie, err := GetMovieDataByMovieId(value)
+		if err != nil {
+			return nil, err
+		}
+		movies = append(movies, movie)
+	}
+
+	return movies, nil
+}
