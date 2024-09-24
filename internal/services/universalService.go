@@ -121,12 +121,12 @@ func GetNewMoviesByUserId(id int, limitStart int, limitFinish int) ([]*models.Un
 	return movies, nil
 }
 
-func GetTrandingMoviesByUserId(id int) ([]*models.Universal, error) {
+func GetTrandingMoviesByUserId(id int, limitStart int, limitFinish int) ([]*models.Universal, error) {
 	var movies []*models.Universal
 	var ids []int
-	query := "SELECT id FROM movies m WHERE NOT EXISTS (SELECT 1 FROM user_movie_interactions ui WHERE ui.movie_id = m.id AND ui.user_id = ?) AND m.release_date < CURRENT_DATE ORDER BY popularity DESC,m.release_date DESC LIMIT 30"
+	query := "SELECT id FROM movies m WHERE NOT EXISTS (SELECT 1 FROM user_movie_interactions ui WHERE ui.movie_id = m.id AND ui.user_id = ?) AND m.release_date < CURRENT_DATE ORDER BY popularity DESC,m.release_date DESC LIMIT ?,?"
 
-	rows, err := db.DB.Query(query, id)
+	rows, err := db.DB.Query(query, id,limitStart,limitFinish)
 	if err != nil {
 		return nil, err
 	}
