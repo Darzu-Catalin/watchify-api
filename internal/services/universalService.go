@@ -185,7 +185,7 @@ func GetMoviesByGenre(genre string, limitStart int, limitFinish int) ([]*models.
 func GetWatchLaterMovies(id int, limitStart int, limitFinish int) ([]*models.Universal, error){
 	var movies []*models.Universal
 	var ids []int
-	query := "SELECT movie_id FROM user_movie_interactions m WHERE m.user_id = ? and interaction_type = watch_later LIMIT ?,? "
+	query := "SELECT movie_id FROM user_movie_interactions m WHERE m.user_id = ? and interaction_type = 'watch_later' LIMIT ?,? "
 
 	rows, err := db.DB.Query(query, id, limitStart,limitFinish)
 	if err != nil {
@@ -212,7 +212,37 @@ func GetWatchLaterMovies(id int, limitStart int, limitFinish int) ([]*models.Uni
 	return movies, nil
 }
 
-func GetLikedMovies(id int) (int, error){
+func GetLikedMovies(id int, limitStart int, limitFinish int) ([]*models.Universal, error){
+	var movies []*models.Universal
+	var ids []int
+	query := "SELECT movie_id FROM user_movie_interactions m WHERE m.user_id = ? and interaction_type = 'liked' LIMIT ?,? "
+
+	rows, err := db.DB.Query(query, id, limitStart,limitFinish)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		ids = append(ids, id)
+	}
+
+	for _, value := range ids {
+		movie, err := GetMovieDataByMovieId(value)
+		if err != nil {
+			return nil, err
+		}
+		movies = append(movies, movie)
+	}
+
+	return movies, nil
+}
+
+func GetLikedMoviesId(id int) (int, error){
 	var likedMoviesId int
 	query := "SELECT movie_id FROM user_movie_interactions WHERE user_id = ? and interaction_type = 'liked' ORDER BY RAND() LIMIT 1; "
 
