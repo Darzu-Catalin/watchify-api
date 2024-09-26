@@ -55,6 +55,7 @@ func main() {
 	mux.HandleFunc("/getWatchLaterMovies", handlers.GetWatchLaterMovies)
 	mux.HandleFunc("/addUser", handlers.AddUser)
 	mux.HandleFunc("/addUserInteraction", handlers.AddUserInteraction)
+	mux.HandleFunc("/deleteUserInteraction", handlers.DeleteUserInteraction)
 	mux.HandleFunc("/getUserInteractions", handlers.GetAllUserInteraction)
 
 

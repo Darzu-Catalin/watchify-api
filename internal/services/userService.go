@@ -79,3 +79,28 @@ func GetAllUserInteraction(id int, movieId int) ([]string, error) {
 	return interactions, err
 }
 
+func DeleteUserInteraction(id int, movieId int, interaction string) (string, error) {
+	query := "DELETE FROM user_movie_interactions WHERE user_id = ? and movie_id = ? and interaction_type = ?"
+	var response string
+	
+	// Execute the SQL query
+	res, err := db.DB.Exec(query, id, movieId, interaction)
+	if err != nil {
+		log.Printf("Error executing SQL query: %v", err)
+		response = "error" // Log the error
+		return response, err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+    if err != nil {
+        log.Printf("Error retrieving rows affected: %v", err)
+		response = "error"
+        return response, err
+    }
+	response = "Succesfully deleted interaction"
+    log.Printf("Rows affected: %d", rowsAffected)
+
+	// Return the created user
+	return response, err
+}
+
