@@ -3,7 +3,7 @@ package services
 import (
 	"WatchifyAPI/internal/db"
 	"WatchifyAPI/internal/models"
-
+	"fmt"
 	// "net/http"
 	"log"
 )
@@ -185,7 +185,7 @@ func GetMoviesByGenre(genre string, limitStart int, limitFinish int) ([]*models.
 func GetWatchLaterMovies(id int, limitStart int, limitFinish int) ([]*models.Universal, error){
 	var movies []*models.Universal
 	var ids []int
-	query := "SELECT movie_id FROM user_movie_interactions m WHERE m.user_id = ? LIMIT ?,? "
+	query := "SELECT movie_id FROM user_movie_interactions m WHERE m.user_id = ? and interaction_type = watch_later LIMIT ?,? "
 
 	rows, err := db.DB.Query(query, id, limitStart,limitFinish)
 	if err != nil {
@@ -210,4 +210,29 @@ func GetWatchLaterMovies(id int, limitStart int, limitFinish int) ([]*models.Uni
 	}
 
 	return movies, nil
+}
+
+func GetLikedMovies(id int) (int, error){
+	var likedMoviesId int
+	query := "SELECT movie_id FROM user_movie_interactions WHERE user_id = ? and interaction_type = 'liked' ORDER BY RAND() LIMIT 1; "
+
+	rows, err := db.DB.Query(query, id)
+	if err != nil {
+		return -1, err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+        if err := rows.Scan(&likedMoviesId); err != nil {
+            log.Printf("Error scanning liked movie ID: %v", err)
+            return -1, err
+        }
+    } else {
+        // No rows found
+        log.Println("No liked movies found for the user")
+        return -1, fmt.Errorf("no liked movies found")
+    }
+	
+	
+	return likedMoviesId, nil
 }
