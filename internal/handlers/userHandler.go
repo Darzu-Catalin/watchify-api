@@ -74,5 +74,42 @@ func AddUserInteraction(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(response)
 }
 
+func GetAllUserInteraction(w http.ResponseWriter, r *http.Request) {
+    ids, ok := r.URL.Query()["id"]
+	if !ok || len(ids[0]) < 1 {
+		http.Error(w, "Missing 'id' parameter", http.StatusBadRequest)
+		return
+	}
+    
+	userId, err := strconv.Atoi(ids[0])
+	if err != nil {
+		http.Error(w, "Invalid 'id' parameter", http.StatusBadRequest)
+		return
+	}
+
+    movie, ok := r.URL.Query()["movieId"]
+	if !ok || len(ids[0]) < 1 {
+		http.Error(w, "Missing 'movie id' parameter", http.StatusBadRequest)
+		return
+	}
+    
+	movieId, err := strconv.Atoi(movie[0])
+	if err != nil {
+		http.Error(w, "Invalid 'id' parameter", http.StatusBadRequest)
+		return
+	}
+    // Decode the request body into the User struct
+    // Call the service layer to add the user
+    response, err := services.GetAllUserInteraction(userId,movieId)
+    if err != nil {
+        http.Error(w, "Failed to create user", http.StatusInternalServerError)
+        return
+    }
+
+    // Return the created user as the response
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response)
+}
+
 
 

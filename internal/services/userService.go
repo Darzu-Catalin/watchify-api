@@ -55,3 +55,27 @@ func AddUserInteraction(id int, movieId int, interaction string) (string, error)
 	return response, err
 }
 
+func GetAllUserInteraction(id int, movieId int) ([]string, error) {
+	var interactions []string
+	query := "SELECT interaction_type FROM user_movie_interactions WHERE user_id = ? and movie_id = ?"
+	
+	
+	rows, err := db.DB.Query(query, id, movieId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next(){
+		var interaction string
+		if err := rows.Scan(&interaction); err != nil {
+			return nil, err
+		}
+
+		interactions = append(interactions, interaction)
+	}
+
+	// Return the created user
+	return interactions, err
+}
+
