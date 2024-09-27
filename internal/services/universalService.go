@@ -215,7 +215,7 @@ func GetWatchLaterMovies(id int, limitStart int, limitFinish int) ([]*models.Uni
 func GetLikedMovies(id int, limitStart int, limitFinish int) ([]*models.Universal, error) {
 	var movies []*models.Universal
 	var ids []int
-	query := "SELECT movie_id FROM user_movie_interactions m WHERE m.user_id = ? and interaction_type = 'liked' LIMIT ?,? "
+	query := "SELECT movie_id FROM user_movie_interactions m WHERE m.user_id = ? and interaction_type = 'liked' ORDER BY interaction_date DESC LIMIT ?,? "
 
 	rows, err := db.DB.Query(query, id, limitStart, limitFinish)
 	if err != nil {
