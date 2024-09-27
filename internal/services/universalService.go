@@ -4,6 +4,7 @@ import (
 	"WatchifyAPI/internal/db"
 	"WatchifyAPI/internal/models"
 	"fmt"
+
 	// "net/http"
 	"log"
 )
@@ -17,21 +18,21 @@ func GetMovieDataByMovieId(movieId int) (*models.Universal, error) {
 		// handle the error
 
 		log.Println(err) // or return the error
-		
+
 	}
 
 	movieData.Genre, err = GetGenreByMovieId(movieId)
 	if err != nil {
 		// handle the error
 		log.Println(err)
-		 // or return the error
+		// or return the error
 	}
 
 	movieData.Production, err = GetProductionByMovieId(movieId)
 	if err != nil {
 		// handle the error
 		log.Println(err)
-		 // or return the error
+		// or return the error
 	}
 
 	movieData.Video, err = GetVideoByMovieId(movieId)
@@ -126,7 +127,7 @@ func GetTrandingMoviesByUserId(id int, limitStart int, limitFinish int) ([]*mode
 	var ids []int
 	query := "SELECT id FROM movies m WHERE NOT EXISTS (SELECT 1 FROM user_movie_interactions ui WHERE ui.movie_id = m.id AND ui.user_id = ?) AND m.release_date < CURRENT_DATE ORDER BY popularity DESC,m.release_date DESC LIMIT ?,?"
 
-	rows, err := db.DB.Query(query, id,limitStart,limitFinish)
+	rows, err := db.DB.Query(query, id, limitStart, limitFinish)
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +151,6 @@ func GetTrandingMoviesByUserId(id int, limitStart int, limitFinish int) ([]*mode
 
 	return movies, nil
 }
-
 
 func GetMoviesByGenre(genre string, limitStart int, limitFinish int) ([]*models.Universal, error) {
 	var movies []*models.Universal
@@ -182,12 +182,12 @@ func GetMoviesByGenre(genre string, limitStart int, limitFinish int) ([]*models.
 	return movies, nil
 }
 
-func GetWatchLaterMovies(id int, limitStart int, limitFinish int) ([]*models.Universal, error){
+func GetWatchLaterMovies(id int, limitStart int, limitFinish int) ([]*models.Universal, error) {
 	var movies []*models.Universal
 	var ids []int
-	query := "SELECT movie_id FROM user_movie_interactions m WHERE m.user_id = ? and interaction_type = 'watch_later' LIMIT ?,? "
+	query := "SELECT movie_id FROM user_movie_interactions m WHERE m.user_id = ? and interaction_type = 'watch_later' ORDER BY interaction_date DESC LIMIT ?,? "
 
-	rows, err := db.DB.Query(query, id, limitStart,limitFinish)
+	rows, err := db.DB.Query(query, id, limitStart, limitFinish)
 	if err != nil {
 		return nil, err
 	}
@@ -212,12 +212,12 @@ func GetWatchLaterMovies(id int, limitStart int, limitFinish int) ([]*models.Uni
 	return movies, nil
 }
 
-func GetLikedMovies(id int, limitStart int, limitFinish int) ([]*models.Universal, error){
+func GetLikedMovies(id int, limitStart int, limitFinish int) ([]*models.Universal, error) {
 	var movies []*models.Universal
 	var ids []int
 	query := "SELECT movie_id FROM user_movie_interactions m WHERE m.user_id = ? and interaction_type = 'liked' LIMIT ?,? "
 
-	rows, err := db.DB.Query(query, id, limitStart,limitFinish)
+	rows, err := db.DB.Query(query, id, limitStart, limitFinish)
 	if err != nil {
 		return nil, err
 	}
@@ -242,7 +242,7 @@ func GetLikedMovies(id int, limitStart int, limitFinish int) ([]*models.Universa
 	return movies, nil
 }
 
-func GetLikedMoviesId(id int) (int, error){
+func GetLikedMoviesId(id int) (int, error) {
 	var likedMoviesId int
 	query := "SELECT movie_id FROM user_movie_interactions WHERE user_id = ? and interaction_type = 'liked' ORDER BY RAND() LIMIT 1; "
 
@@ -253,16 +253,15 @@ func GetLikedMoviesId(id int) (int, error){
 	defer rows.Close()
 
 	if rows.Next() {
-        if err := rows.Scan(&likedMoviesId); err != nil {
-            log.Printf("Error scanning liked movie ID: %v", err)
-            return -1, err
-        }
-    } else {
-        // No rows found
-        log.Println("No liked movies found for the user")
-        return -1, fmt.Errorf("no liked movies found")
-    }
-	
-	
+		if err := rows.Scan(&likedMoviesId); err != nil {
+			log.Printf("Error scanning liked movie ID: %v", err)
+			return -1, err
+		}
+	} else {
+		// No rows found
+		log.Println("No liked movies found for the user")
+		return -1, fmt.Errorf("no liked movies found")
+	}
+
 	return likedMoviesId, nil
 }
