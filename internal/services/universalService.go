@@ -244,7 +244,7 @@ func GetLikedMovies(id int, limitStart int, limitFinish int) ([]*models.Universa
 
 func GetLikedMoviesId(id int) (int, error) {
 	var likedMoviesId int
-	query := "SELECT movie_id FROM user_movie_interactions WHERE user_id = ? and interaction_type = 'liked' ORDER BY RAND() LIMIT 1; "
+	query := "SELECT movie_id FROM user_movie_interactions WHERE user_id = ? and interaction_type = 'liked' ORDER BY RAND(),interaction_date DESC LIMIT 1; "
 
 	rows, err := db.DB.Query(query, id)
 	if err != nil {
