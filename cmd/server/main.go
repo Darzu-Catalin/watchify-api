@@ -59,6 +59,7 @@ func main() {
 	mux.HandleFunc("/deleteUserInteraction", handlers.DeleteUserInteraction)
 	mux.HandleFunc("/getUserInteractions", handlers.GetAllUserInteraction)
 	mux.HandleFunc("/getRecommendation", handlers.GetRecMovies)
+	mux.HandleFunc("/getSimilar", handlers.GetSimilarMovies)
 
 	// Wrap the mux with the CORS middleware
 	corsHandler := enableCORS(mux)
