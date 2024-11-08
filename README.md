@@ -1,53 +1,26 @@
-# 🎬 Movie Recommendation API
+# Movie Recommendation System API
 
-Welcome to the Movie Recommendation API! This RESTful API, built with Go, provides personalized movie recommendations. It enables users to search for movies, retrieve detailed movie information, and receive tailored movie recommendations based on various factors.
+This repository contains the API for a Movie Recommendation System built using Go. The API provides endpoints to retrieve movie information, manage user data, and recommend movies based on different criteria.
 
----
+## Table of Contents
+- [About](#about)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
 
-## 📋 Table of Contents
+## About
 
-- [Features](#-features)
-- [Project Structure](#-project-structure)
-- [Getting Started](#️-getting-started)
-- [Installation](#installation)
-- [Example Endpoints](#-example-endpoints)
-- [Technologies Used](#-technologies-used)
-- [Contributing](#-contributing)
-- [License](#-license)
+This project aims to provide a movie recommendation service, which retrieves movie details (like genre, cast, crew, etc.) and offers personalized recommendations based on user preferences and interactions.
 
----
+## Features
 
-## 🚀 Features
+- **Retrieve Movies**: Fetch a list of movies from the database.
+- **Movie Details**: Fetch detailed information about a specific movie.
+- **User Management**: Create and manage users who can interact with the movie database.
+- **Movie Recommendations**: Personalized recommendations based on user data.
 
-- **🔍 Movie Search:** Search for movies by title or genre.
-- **🎥 Movie Details:** Retrieve comprehensive information on movies, including genre, cast, crew, and production details.
-- **✨ Recommendations:** Get personalized movie recommendations based on preferences.
-- **👤 User Profiles:** Support for user-specific data to enhance recommendations.
-- **⚡ Fast and Scalable:** Built with Go for optimal performance and scalability.
+## Technologies Used
 
----
-
-## 🗂 Project Structure
-
-The project follows a clean architecture pattern with handlers and services:
-
-- **Handlers** manage HTTP requests and responses.
-- **Services** contain the core business logic and handle database interactions.
-
----
-
-## 🛠️ Getting Started
-
-### Prerequisites
-
-- **Go** (version X.X or higher)
-- **MySQL** (for managing movie data)
-
----
-
-## 🔧 Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/movie-recommendation-api.git
-   cd movie-recommendation-api
+- **Go (Golang)**: The core language for building the API.
+- **MySQL**: Database to store movie and user information.
+- **Gin**: A web framework for Go that is used to build the HTTP API.
+- **Gorm**: ORM for interacting with MySQL.
